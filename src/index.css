@@ -2,17 +2,17 @@
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 body {
   overflow-y: scroll;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 :root,
 body,
 html {
-  background-color: #f5f5f5;
-  box-sizing: border-box;
+  background-color: #f3f2ef;
 }
 
 div,
@@ -40,4 +40,11 @@ ul {
   font-size: 100%;
   vertical-align: baseline;
   background: transparent;
+}
+
+@media all and (max-width: 768px) {
+  body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
 }
