@@ -1,9 +1,8 @@
 import "./App.css";
+import AppRouter from "./Components/AppRouter/AppRouter";
 
 function App() {
-  return <div className="app">
-    <h1>🚀 SOCIAL MEDIA APP 🚀</h1>
-  </div>;
+  return <AppRouter />;
 }
 
 export default App;
