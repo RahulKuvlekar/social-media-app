@@ -1,9 +1,8 @@
 import React from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 const Header = () => {
   const location = useLocation();
-  const history = useHistory();
   return (
     <>
       <Container>
@@ -40,12 +39,12 @@ const Header = () => {
                 </Link>
               </NavItem>
 
-              <NavItem>
+              {/* <NavItem>
                 <Link to={location.pathname}>
                   <img src="/images/NavLogo/nav-jobs.svg" alt="Jobs Logo" />
                   <span>Jobs</span>
                 </Link>
-              </NavItem>
+              </NavItem> */}
 
               <NavItem>
                 <Link to={location.pathname}>
@@ -74,8 +73,8 @@ const Header = () => {
                     Me <img src="/images/NavLogo/down-icon.svg" alt="" />
                   </span>
                 </Link>
-                <SignOut onClick={(event) => history.push("/join-now")}>
-                  <Link to="/home">Sign Out</Link>
+                <SignOut>
+                  <Link to="/">Sign Out</Link>
                 </SignOut>
               </User>
             </NavigationLists>
@@ -254,7 +253,7 @@ const NavItem = styled.li`
 
 const SignOut = styled.div`
   position: absolute;
-  top: 3rem;
+  top: 3.2rem;
   background: white;
   border-radius: 0 0 5px 5px;
   width: 100px;
@@ -268,8 +267,14 @@ const SignOut = styled.div`
     font-weight: bold;
   }
   @media (max-width: 768px) {
-    top: -2.9rem;
+    top: -2.5rem;
     right: 3%;
+  }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    a {
+      color: white;
+    }
   }
 `;
 
