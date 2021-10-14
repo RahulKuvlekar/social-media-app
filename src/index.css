@@ -44,7 +44,7 @@ ul {
 
 @media all and (max-width: 768px) {
   body {
-    overflow-y: hidden;
+    overflow-y: scroll;
     overflow-x: hidden;
   }
 }
