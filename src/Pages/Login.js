@@ -1,17 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-const Login = () => {
+const Login = (props) => {
   return (
     <Container>
+      {props.user && <Redirect to="/home" />}
       <Nav>
         <NavLink to="/">
           <img src="/Images/Logo.png" alt="LOGO-SMA" />
         </NavLink>
         <div>
           <JoinNow to="/join-now">Join Now</JoinNow>
-          <SignIn to="/sign-in">SignIn</SignIn>
+          <SignIn to="/sign-up">SignIn</SignIn>
         </div>
       </Nav>
       <Section>
@@ -143,4 +145,13 @@ const Section = styled.section`
   }
 `;
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userInfoState.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -1,41 +1,53 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import {
+  createNewAccount,
   signInWithGoogle,
-  signInToAccount,
 } from "../Redux/Actions/authActions";
 
-const JoinNow = (props) => {
+const SignUp = (props) => {
   const [error, setError] = useState({ state: false, message: null });
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const IS_INVALID = emailAddress === "" || password === "";
 
-  const loginHandler = async (event) => {
+  const SignUpHandler = (event) => {
     event.preventDefault();
+    console.log(IS_INVALID, emailAddress, password, username, "Sign up wala");
     if (IS_INVALID) {
       setError({ state: true, message: "Check Input Values" });
       return;
     }
     setError({ state: false, message: "" });
-    props.signInToAccount(emailAddress, password);
+    props.createNewAccount(emailAddress, password, username);
     setEmailAddress("");
     setPassword("");
-    console.log("Join In user", props.user);
+    setUsername("");
   };
+
   return (
     <CenterForm>
       {props.user && <Redirect to="/home" />}
       <FormComponent>
-        <BrandName>LOGIN</BrandName>
-        <Form onSubmit={loginHandler}>
+        <BrandName>REGISTER</BrandName>
+        <Form onSubmit={SignUpHandler}>
+          <label htmlFor="name">UserName</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Enter your Fullname"
+            autoComplete="name"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+          />
           <label htmlFor="email">Email Address</label>
           <input
             id="email"
             type="text"
-            placeholder="Enter Email-Id"
+            placeholder="Enter New Email-Id"
             autoComplete="email"
             value={emailAddress}
             onChange={(event) => setEmailAddress(event.target.value)}
@@ -44,15 +56,15 @@ const JoinNow = (props) => {
           <input
             id="pass"
             type="password"
-            placeholder="Enter Password"
+            placeholder="Enter New Password"
             autoComplete="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
 
-          <button type="submit"> Login</button>
+          <button type="submit"> Sign Up</button>
           <p>
-            Not a member?<Link to={"/sign-up"}>Signup</Link>
+            Already a member?<Link to={"/join-now"}>Login</Link>
           </p>
           {error.state && <ErrorMsg>{error.message}</ErrorMsg>}
         </Form>
@@ -205,9 +217,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     signInWithGoogle: () => dispatch(signInWithGoogle()),
-    signInToAccount: (emailAddress, password) =>
-      dispatch(signInToAccount(emailAddress, password)),
+    createNewAccount: (emailAddress, password, username) =>
+      dispatch(createNewAccount(emailAddress, password, username)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(JoinNow);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
