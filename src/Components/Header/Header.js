@@ -1,7 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-const Header = () => {
+import { connect } from "react-redux";
+import { userSignOut } from "../../Redux/Actions/authActions";
+
+const Header = (props) => {
   const location = useLocation();
   return (
     <>
@@ -68,13 +71,17 @@ const Header = () => {
 
               <User>
                 <Link to="/home">
-                  <img src="/images/NavLogo/user.svg" alt="" />
+                  {props.user?.photoURL ? (
+                    <img src={props.user.photoURL} alt="" />
+                  ) : (
+                    <img src="/images/NavLogo/user.svg" alt="" />
+                  )}
                   <span>
                     Me <img src="/images/NavLogo/down-icon.svg" alt="" />
                   </span>
                 </Link>
-                <SignOut>
-                  <Link to="/">Sign Out</Link>
+                <SignOut onClick={()=> props.userSignOut()}>
+                  <p>Sign Out</p>
                 </SignOut>
               </User>
             </NavigationLists>
@@ -101,7 +108,7 @@ const Container = styled.header`
   top: 0;
   left: 0;
   width: 100vw;
-  z-index: 100;
+  z-index: 10;
 `;
 
 const Content = styled.nav`
@@ -318,4 +325,15 @@ const User = styled(NavItem)`
 //   border-left: 1px solid rgba(0, 0, 0, 0.08);
 // `;
 
-export default Header;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userInfoState.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userSignOut: () => dispatch(userSignOut()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

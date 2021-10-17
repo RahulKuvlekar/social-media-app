@@ -1,19 +1,30 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import styled from "styled-components";
+import { userAuthenticationStatus } from "../../Redux/Actions/authActions";
+import { connect } from "react-redux";
+
 // import Login from "../Login/Login";
 const Login = lazy(() => import("../../Pages/Login"));
-const SignIn = lazy(() => import("../../Pages/SignIn"));
+const SignUp = lazy(() => import("../../Pages/SignUp"));
 const JoinNow = lazy(() => import("../../Pages/JoinNow"));
 const Home = lazy(() => import("../../Pages/Home"));
 
-const AppRouter = () => {
+const AppRouter = (props) => {
+  const { userAuthenticationStatus } = props; //take care of useEffect dependency
+  useEffect(() => {
+    userAuthenticationStatus();
+  }, [userAuthenticationStatus]);
+
   return (
     <Router>
-      <Suspense fallback={<h1>Loading</h1>}>
+      <Suspense
+        fallback={<ImageLoader src="/Images/Loading.gif" alt="Loading...." />}
+      >
         <Switch>
           <Route exact path="/" component={Login} />
           <Route path="/join-now" component={JoinNow} />
-          <Route path="/sign-in" component={SignIn} />
+          <Route path="/sign-up" component={SignUp} />
           <Route path="/home" component={Home} />
         </Switch>
       </Suspense>
@@ -21,4 +32,24 @@ const AppRouter = () => {
   );
 };
 
-export default AppRouter;
+const ImageLoader = styled.img`
+  position: absolute;
+  z-index: 999;
+  top: 45%;
+  left: 45%;
+  width: 4.5rem;
+  height: 4.5rem;
+`;
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.userInfoState.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userAuthenticationStatus: () => dispatch(userAuthenticationStatus()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
