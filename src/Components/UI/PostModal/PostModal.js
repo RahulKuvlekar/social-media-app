@@ -3,6 +3,8 @@ import Modal from "../Modal/Modal";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import ReactPlayer from "react-player";
+import { postArticle } from "../../../Redux/Actions/authActions";
+import firebase from "firebase/compat/app";
 
 const PostModal = (props) => {
   const [discription, setDiscription] = useState("");
@@ -11,11 +13,14 @@ const PostModal = (props) => {
   const [showVideo, setShowVideo] = useState("");
   const IS_INVALID = discription.trim() === "";
 
-  const hideModal = () => {
+  const resetAll = () => {
     setDiscription("");
     setShareImage("");
     setShareVideo("");
     setShowVideo("");
+  };
+  const hideModal = () => {
+    resetAll();
     props.onHideModal();
   };
 
@@ -28,6 +33,26 @@ const PostModal = (props) => {
       return;
     }
     setShareImage(IMAGE);
+  };
+
+  const postArticleHandler = (event) => {
+    // event.preventDefault();
+    // console.log("EVENT", event);
+    // if (event.target !== event.currentTarget) {
+    //   console.log("IF-EVENT", event);
+    //   return;
+    // }
+    // console.log("AFTER-EVENT", event);
+    const payload = {
+      user: props.user,
+      image: shareImage,
+      video: shareVideo,
+      description: discription,
+      timestamp: firebase.firestore.Timestamp.now(),
+    };
+    props.postArticle(payload);
+    resetAll();
+    props.onHideModal();
   };
 
   return (
@@ -91,7 +116,7 @@ const PostModal = (props) => {
           {shareVideo && (
             <ReactPlayer
               height="300px"
-              style={{ objectFit: "contain" }}
+              //   style={{ objectFit: "contain" }}
               width="100%"
               url={shareVideo}
             />
@@ -120,9 +145,7 @@ const PostModal = (props) => {
         </ShareComment>
         <PostButton
           disabled={IS_INVALID && !shareImage}
-          onClick={() => {
-            console.log("Clicked");
-          }}
+          onClick={(event) => postArticleHandler(event)}
         >
           {IS_INVALID && !shareImage ? "Disable" : "Post"}
         </PostButton>
@@ -278,7 +301,7 @@ const UploadPhoto = styled.div`
   input {
     width: 100%;
     padding: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0;
   }
   ${UploadImage} {
     width: 100%;
@@ -300,7 +323,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // name: ()=> dispatch(fuctnName())
+    postArticle: (payload) => dispatch(postArticle(payload)),
   };
 };
 
