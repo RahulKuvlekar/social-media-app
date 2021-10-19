@@ -1,4 +1,4 @@
-import { auth } from "../../Utils/init-firebase";
+import db, { auth, storage } from "../../Utils/init-firebase";
 import {
   signInWithPopup,
   GoogleAuthProvider,
@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "@firebase/auth";
+import { SET_USER, SET_LOADING_STATUS, SET_ARTICLES } from "./actionTypes";
 
 export const signInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
@@ -16,7 +17,7 @@ export const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((data) => {
         dispatch({
-          type: "SET_USER",
+          type: SET_USER,
           payload: data.user,
         });
       })
@@ -46,7 +47,7 @@ export const signInToAccount = (emailID, pass) => {
       .then((data) => {
         console.log("SIGN TO ACCOUNT ", data);
         dispatch({
-          type: "SET_USER",
+          type: SET_USER,
           payload: data.user,
         });
       })
@@ -60,7 +61,7 @@ export const userAuthenticationStatus = (emailID, pass) => {
     onAuthStateChanged(auth, (user) => {
       console.log("AUTH-STATE -> CHANGED to", user);
       dispatch({
-        type: "SET_USER",
+        type: SET_USER,
         payload: user ? user : null,
       });
     });
@@ -72,5 +73,114 @@ export const userSignOut = (emailID, pass) => {
     signOut(auth)
       .then((data) => console.log("Signed Out", data))
       .catch((error) => alert(error.message));
+  };
+};
+
+// ref => Returns a reference for the given path in the default bucket.
+// snapshot => of the current task state.
+// STATE_CHANGED: TaskEvent
+// For this event,
+
+// The `next` function is triggered on progress updates and when the task is paused/resumed with a firebase.storage.UploadTaskSnapshot as the first argument.
+// The `error` function is triggered if the upload is canceled or fails for another reason.
+// The `complete` function is triggered if the upload completes successfully.
+
+export const postArticle = (payload) => {
+  return (dispatch) => {
+    if (payload.image !== "") {
+      dispatch({
+        type: SET_LOADING_STATUS,
+        status: true,
+      });
+      console.log("Loading TRUE");
+      const upload = storage
+        .ref(`Images/${payload.image.name}`)
+        .put(payload.image);
+      upload.on(
+        "STATE_CHANGED",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`progress is ${progress}% ...`);
+          if (snapshot.state === "RUNNING") {
+            console.log(`progress is ${progress}% ...`);
+          }
+        },
+        (error) => alert(error.message),
+        async () => {
+          const downloadURL = await upload.snapshot.ref.getDownloadURL();
+          db.collection("posts").add({
+            userInfo: {
+              emailID: payload.user.email,
+              name: payload.user.displayName,
+              date: payload.timestamp,
+              image: payload.user.photoURL,
+            },
+            shareVideo: payload.video,
+            shareImage: downloadURL,
+            comment: 0,
+            description: payload.description,
+          });
+          dispatch({
+            type: SET_LOADING_STATUS,
+            status: false,
+          });
+          console.log("Loading False");
+        }
+      );
+    } else {
+      db.collection("posts").add({
+        userInfo: {
+          emailID: payload.user.email,
+          name: payload.user.displayName,
+          date: payload.timestamp,
+          image: payload.user.photoURL,
+        },
+        shareVideo: payload.video,
+        shareImage: "",
+        comment: 0,
+        description: payload.description,
+      });
+    }
+  };
+};
+
+export const getArticles = () => {
+  let payload;
+  return (dispatch) => {
+    db.collection("posts")
+      .orderBy("userInfo.date", "desc")
+      .onSnapshot((snapshot) => {
+        payload = snapshot.docs.map((doc, idx) => ({
+          ...doc.data(),
+          key: idx,
+          id: doc.id,
+        }));
+        dispatch({
+          type: SET_ARTICLES,
+          payload: payload,
+        });
+        console.log("articles payload after", payload);
+      });
+  };
+};
+
+export const deletePost = (postId, imgURL) => {
+  return (dispatch) => {
+    db.collection("posts").doc(postId).delete();
+
+    if (imgURL !== "") {
+      // Creating a reference to the file to delete
+      var imgRef = storage.refFromURL(imgURL);
+      imgRef
+        .delete()
+        .then(() => {
+          // File deleted successfully
+          console.log("File Deleted successfully");
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
   };
 };
