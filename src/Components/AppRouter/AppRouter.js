@@ -1,9 +1,8 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import styled from "styled-components";
 import { userAuthenticationStatus } from "../../Redux/Actions/authActions";
 import { connect } from "react-redux";
-
+import ImageLoader from "../UI/ImageLoader/ImageLoader";
 // import Login from "../Login/Login";
 const Login = lazy(() => import("../../Pages/Login"));
 const SignUp = lazy(() => import("../../Pages/SignUp"));
@@ -31,15 +30,6 @@ const AppRouter = (props) => {
     </Router>
   );
 };
-
-const ImageLoader = styled.img`
-  position: absolute;
-  z-index: 999;
-  top: 45%;
-  left: 45%;
-  width: 4.5rem;
-  height: 4.5rem;
-`;
 
 const mapStateToProps = (state) => {
   return {
