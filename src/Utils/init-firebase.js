@@ -1,8 +1,11 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
-import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+// import { getAuth } from "firebase/auth";
+// import { getStorage } from "firebase/storage";
 import "firebase/compat/firestore";
+import "firebase/compat/auth"
+import "firebase/compat/storage"
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -17,7 +20,7 @@ const firebaseConfig = {
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
-export const storage = getStorage(firebaseApp);
-export const auth = getAuth(firebaseApp);
+export const storage = firebaseApp.storage();
+export const auth = firebaseApp.auth();
 // export const auth = firebaseApp.auth();
 export default db;
