@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PostModal from "../UI/PostModal/PostModal";
-// import ReactPlayer from "react-player";
+import { getArticles, deletePost } from "../../Redux/Actions/authActions";
+import ReactPlayer from "react-player";
+// import ImageLoader from "../UI/ImageLoader/ImageLoader";
 
 const FeedSection = (props) => {
-  const [displayDropbox, setDisplayDropbox] = useState(false);
+  // const [displayDropbox, setDisplayDropbox] = useState(false);
   const [modal, setModal] = useState(false);
-
   const showModal = () => {
     setModal(true);
   };
@@ -15,6 +16,23 @@ const FeedSection = (props) => {
     setModal(false);
   };
 
+  const editPostHandler = (event, data) => {
+    const postID = event.target.getAttribute("postid");
+    console.log("Edit post ", postID);
+  };
+  const deletePostHandler = (event) => {
+    const postID = event.target.getAttribute("postid");
+    const imgURL = event.target.getAttribute("imgurl");
+    console.log("Delete Post ", postID, imgURL);
+    props.deletePost(postID, imgURL);
+  };
+
+  const { getArticles } = props;
+
+  useEffect(() => {
+    getArticles();
+    console.log("artile log");
+  }, [getArticles]);
   return (
     <Container>
       {modal && <PostModal onHideModal={hideModal} />}
@@ -50,74 +68,109 @@ const FeedSection = (props) => {
           </button>
         </UploadIcons>
       </ShareBox>
-
-      <PostSection>
-        <PostHeader>
-          <img src="/Images/NavLogo/user.svg" alt="Avatar" />
-          <div>
-            <div>Title</div>
-            <div>Info</div>
-            <div>Date</div>
-          </div>
-          <button onClick={() => setDisplayDropbox(!displayDropbox)}>
-            <img src="/Images/ellipsis.svg" alt="Logo" />
-          </button>
-          {displayDropbox && (
-            <Dropdown>
-              <li>Edit</li>
-              <li>Delete</li>
-              <li onClick={() => setDisplayDropbox(!displayDropbox)}>Cancle</li>
-            </Dropdown>
-          )}
-        </PostHeader>
-        <PostBody>
-          <div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            alias dolor fugit, eligendi, beatae fugiat harum dolores ab est
-            cupiditate sunt suscipit odio vitae quidem!
-          </div>
-          <img src="/Images/descriptTest-1.png" alt="post" />
-          <li>
-            <button>
+      {props.loadingState && (
+        <div style={{ width: "100%", textAlign: "center" }}>
+          <img
+            src="/Images/Loading.gif"
+            alt="Loading...."
+            style={{ width: "4.5rem", height: "4.5rem", margin: "1rem 0" }}
+          />
+        </div>
+      )}
+      {props.articles.length > 0 &&
+        props.articles.map((post) => (
+          <PostSection key={post.key} id={post.id}>
+            <PostHeader>
               <img
-                src="https://static-exp1.licdn.com/sc/h/8ekq8gho1ruaf8i7f86vd1ftt"
-                alt="Like"
+                src={
+                  post.userInfo?.image
+                    ? `${post.userInfo?.image}`
+                    : "/Images/NavLogo/user.svg"
+                }
+                alt="Avatar"
               />
-            </button>
-            <button>
-              <img
-                src="https://static-exp1.licdn.com/sc/h/cpho5fghnpme8epox8rdcds22"
-                alt="Like"
-              />
-            </button>
-            <button>
-              <img
-                src="https://static-exp1.licdn.com/sc/h/b1dl5jk88euc7e9ri50xy5qo8"
-                alt="Like"
-              />
-            </button>
-            <span>| Like | Comments</span>
-          </li>
-        </PostBody>
-        <PostFooter>
-          <button>
-            <img src="/Images/Like.svg" alt="" />
-            <span>Like</span>
-          </button>
-          <button>
-            <img src="/Images/Comment.svg" alt="" />
-            <span>Comment</span>
-          </button>
-          <button>
-            <img src="/Images/Share.svg" alt="" />
-            <span>Share</span>
-          </button>
-          <button>
-            <img src="/Images/Send.svg" alt="" />
-            <span>Send</span>
-          </button>
-        </PostFooter>
-      </PostSection>
+              <div>
+                <PostTitle>{post.userInfo?.name}</PostTitle>
+                <PostSubTitle>{post.userInfo?.emailID}</PostSubTitle>
+                <PostSubTitle>
+                  {post.userInfo?.date.toDate().toLocaleString()}
+                </PostSubTitle>
+              </div>
+              {props.user.email === post.userInfo?.emailID && (
+                <button>
+                  <img src="/Images/ellipsis.svg" alt="Logo" />
+                  <Dropdown>
+                    <li
+                      postid={post.id}
+                      imgurl={post.shareImage}
+                      onClick={editPostHandler}
+                    >
+                      Edit
+                    </li>
+                    <li
+                      postid={post.id}
+                      imgurl={post.shareImage}
+                      onClick={deletePostHandler}
+                    >
+                      Delete
+                    </li>
+                    {/* <li>Cancle</li> */}
+                  </Dropdown>
+                </button>
+              )}
+            </PostHeader>
+            <PostBody>
+              <div>{post.description}</div>
+              {post.shareImage && <img src={post.shareImage} alt="post" />}
+              {post.shareVideo && (
+                <ReactPlayerDiv
+                  url={post.shareVideo}
+                  width="100%"
+                  style={{ padding: "0" }}
+                />
+              )}
+              <li>
+                <button>
+                  <img
+                    src="https://static-exp1.licdn.com/sc/h/8ekq8gho1ruaf8i7f86vd1ftt"
+                    alt="Like"
+                  />
+                </button>
+                <button>
+                  <img
+                    src="https://static-exp1.licdn.com/sc/h/cpho5fghnpme8epox8rdcds22"
+                    alt="Like"
+                  />
+                </button>
+                <button>
+                  <img
+                    src="https://static-exp1.licdn.com/sc/h/b1dl5jk88euc7e9ri50xy5qo8"
+                    alt="Like"
+                  />
+                </button>
+                <span>| Like | Comments</span>
+              </li>
+            </PostBody>
+            <PostFooter>
+              <button>
+                <img src="/Images/Like.svg" alt="" />
+                <span>Like</span>
+              </button>
+              <button>
+                <img src="/Images/Comment.svg" alt="" />
+                <span>Comment</span>
+              </button>
+              <button>
+                <img src="/Images/Share.svg" alt="" />
+                <span>Share</span>
+              </button>
+              <button>
+                <img src="/Images/Send.svg" alt="" />
+                <span>Send</span>
+              </button>
+            </PostFooter>
+          </PostSection>
+        ))}
     </Container>
   );
 };
@@ -216,49 +269,8 @@ const PostSection = styled(CartMain)`
   padding: 1rem 0;
 `;
 
-const PostHeader = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  position: relative;
-  justify-content: space-between;
-  padding: 0 1rem;
-  margin-bottom: 0.6rem;
-  img {
-    height: 3rem;
-    width: 3rem;
-    border-radius: 50%;
-  }
-  div {
-    text-align: left;
-    width: 90%;
-    margin: auto;
-    cursor: default;
-    &:first-child {
-      font-size: 0.9rem;
-      font-weight: 900;
-    }
-    &:nth-child(2) {
-      font-size: 0.75rem;
-      color: rgba(0, 0, 0, 0.6);
-    }
-  }
-  button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    img {
-      width: 3rem;
-      height: 3rem;
-      padding: 0 10px;
-    }
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-      border-radius: 50%;
-    }
-  }
-`;
-
 const Dropdown = styled(CartMain)`
+  display: none;
   padding: 0;
   list-style: none;
   position: absolute;
@@ -277,6 +289,55 @@ const Dropdown = styled(CartMain)`
     &:hover {
       background-color: rgba(0, 0, 0, 0.05);
       border-radius: 5px;
+    }
+  }
+`;
+
+const PostTitle = styled.div``;
+const PostSubTitle = styled.div``;
+
+const PostHeader = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  position: relative;
+  justify-content: space-between;
+  padding: 0 1rem;
+  margin-bottom: 0.6rem;
+  img {
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+  }
+  div {
+    text-align: left;
+    width: 90%;
+    margin: auto;
+    cursor: default;
+    ${PostTitle} {
+      font-size: 0.9rem;
+      font-weight: 900;
+      color: rgba(0, 0, 0, 0.7);
+    }
+    ${PostSubTitle} {
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.4);
+    }
+  }
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    img {
+      width: 3rem;
+      height: 3rem;
+      padding: 0 10px;
+    }
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 50%;
+      ${Dropdown} {
+        display: block;
+      }
     }
   }
 `;
@@ -363,14 +424,23 @@ const PostFooter = styled.div`
   }
 `;
 
+const ReactPlayerDiv = styled(ReactPlayer)`
+  div {
+    padding: 0;
+  }
+`;
+
 const mapStateToProps = (state) => {
   return {
     user: state.userInfoState.user,
+    loadingState: state.loadingState.loading,
+    articles: state.articlesState.articles,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    // userSignOut: () => dispatch(userSignOut()),
+    deletePost: (postID, imgURL) => dispatch(deletePost(postID, imgURL)),
+    getArticles: () => dispatch(getArticles()),
   };
 };
 
