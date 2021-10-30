@@ -353,9 +353,10 @@ const PostBody = styled.div`
     cursor: default;
   }
   img {
-    object-fit: cover;
+    object-fit: contain;
     width: 100%;
     position: relative;
+    max-height: 450px;
     /* border: 1px solid black; */
   }
   li {
