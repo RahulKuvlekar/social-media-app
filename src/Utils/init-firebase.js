@@ -3,8 +3,8 @@ import firebase from "firebase/compat/app";
 // import { getAuth } from "firebase/auth";
 // import { getStorage } from "firebase/storage";
 import "firebase/compat/firestore";
-import "firebase/compat/auth"
-import "firebase/compat/storage"
+import "firebase/compat/auth";
+import "firebase/compat/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -22,5 +22,8 @@ export const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
 export const storage = firebaseApp.storage();
 export const auth = firebaseApp.auth();
+export const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
+export const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
+// export const arrayRemove = firebase.firestore.FieldValue.arr;
 // export const auth = firebaseApp.auth();
 export default db;

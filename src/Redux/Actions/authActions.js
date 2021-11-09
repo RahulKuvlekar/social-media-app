@@ -122,6 +122,7 @@ export const postArticle = (payload) => {
             shareVideo: payload.video,
             shareImage: downloadURL,
             comment: 0,
+            Likes: [],
             description: payload.description,
           });
           dispatch({
@@ -142,6 +143,7 @@ export const postArticle = (payload) => {
         shareVideo: payload.video,
         shareImage: "",
         comment: 0,
+        Likes: [],
         description: payload.description,
       });
     }
