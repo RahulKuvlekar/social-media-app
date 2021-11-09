@@ -5,6 +5,7 @@ import styled from "styled-components";
 import {
   createNewAccount,
   signInWithGoogle,
+  userSignOut,
 } from "../Redux/Actions/authActions";
 
 const SignUp = (props) => {
@@ -23,6 +24,10 @@ const SignUp = (props) => {
     }
     setError({ state: false, message: "" });
     props.createNewAccount(emailAddress, password, username);
+    if (props.user) {
+      console.log("Create New Account sign out executed");
+      props.userSignOut();
+    }
     setEmailAddress("");
     setPassword("");
     setUsername("");
@@ -30,7 +35,7 @@ const SignUp = (props) => {
 
   return (
     <CenterForm>
-      {props.user && <Redirect to="/home" />}
+      {props.user && <Redirect to="/join-now" />}
       <FormComponent>
         <BrandName>REGISTER</BrandName>
         <Form onSubmit={SignUpHandler}>
@@ -156,6 +161,7 @@ const Google = styled.button`
   font-size: 0.8rem;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
   &:hover {
     background-color: rgba(207, 207, 207, 0.25);
     color: rgba(0, 0, 0, 0.75);
@@ -219,6 +225,7 @@ const mapDispatchToProps = (dispatch) => {
     signInWithGoogle: () => dispatch(signInWithGoogle()),
     createNewAccount: (emailAddress, password, username) =>
       dispatch(createNewAccount(emailAddress, password, username)),
+    userSignOut: () => dispatch(userSignOut()),
   };
 };
 

@@ -80,7 +80,7 @@ const Header = (props) => {
                     Me <img src="/images/NavLogo/down-icon.svg" alt="" />
                   </span>
                 </Link>
-                <SignOut onClick={()=> props.userSignOut()}>
+                <SignOut onClick={() => props.userSignOut()}>
                   <p>Sign Out</p>
                 </SignOut>
               </User>
@@ -312,6 +312,7 @@ const User = styled(NavItem)`
       align-items: center;
       display: flex;
       justify-content: center;
+      cursor: pointer;
     }
   }
   a {
