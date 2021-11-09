@@ -12,7 +12,7 @@ import { SET_USER, SET_LOADING_STATUS, SET_ARTICLES } from "./actionTypes";
 
 export const signInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
-  console.log("log");
+  console.log("log-GOOGLE-login");
   return (dispatch) => {
     signInWithPopup(auth, provider)
       .then((data) => {
@@ -34,14 +34,17 @@ export const createNewAccount = (emailID, pass, username) => {
           .then((data) => console.log(data))
           .catch((error) => alert(error.message));
         console.log("CREATED ACCOUNT ", data, username);
-
+        dispatch({
+          type: "SET_USER",
+          payload: null,
+        });
         alert("Account Created ", username);
       })
       .catch((error) => alert(error.message));
   };
 };
 export const signInToAccount = (emailID, pass) => {
-  console.log("log-SIGNIN");
+  console.log("log-SIGN-IN");
   return (dispatch) => {
     signInWithEmailAndPassword(auth, emailID, pass)
       .then((data) => {
@@ -56,7 +59,7 @@ export const signInToAccount = (emailID, pass) => {
 };
 
 export const userAuthenticationStatus = (emailID, pass) => {
-  console.log("log-SIGNIN");
+  console.log("log-USER-AUTH");
   return (dispatch) => {
     onAuthStateChanged(auth, (user) => {
       console.log("AUTH-STATE -> CHANGED to", user);
@@ -68,7 +71,7 @@ export const userAuthenticationStatus = (emailID, pass) => {
   };
 };
 export const userSignOut = (emailID, pass) => {
-  console.log("log-SIGNIN");
+  console.log("log-SIGN-OUT");
   return (dispatch) => {
     signOut(auth)
       .then((data) => console.log("Signed Out", data))
