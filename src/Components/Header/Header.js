@@ -25,8 +25,8 @@ const Header = (props) => {
           </Search>
           <Navigation>
             <NavigationLists>
-              <NavItem className="active">
-                <Link to={location.pathname}>
+              <NavItem className={`${!props.ViewProfile ? "active" : ""}`}>
+                <Link to="/home">
                   <img src="/images/NavLogo/nav-home.svg" alt="Home Logo" />
                   <span>Home</span>
                 </Link>
@@ -69,7 +69,7 @@ const Header = (props) => {
                 </Link>
               </NavItem>
 
-              <User>
+              <User className={`${props.ViewProfile ? "active" : ""}`}>
                 <Link to="/home">
                   {props.user?.photoURL ? (
                     <img src={props.user.photoURL} alt="" />
@@ -80,9 +80,14 @@ const Header = (props) => {
                     Me <img src="/images/NavLogo/down-icon.svg" alt="" />
                   </span>
                 </Link>
-                <SignOut onClick={() => props.userSignOut()}>
-                  <p>Sign Out</p>
-                </SignOut>
+                <ViewDropdown>
+                  <ViewProfile>
+                    <Link to="/view-profile">View Profile</Link>
+                  </ViewProfile>
+                  <SignOut onClick={() => props.userSignOut()}>
+                    <p>Sign Out</p>
+                  </SignOut>
+                </ViewDropdown>
               </User>
             </NavigationLists>
           </Navigation>
@@ -258,17 +263,26 @@ const NavItem = styled.li`
   }
 `;
 
-const SignOut = styled.div`
+const ViewDropdown = styled.div`
   position: absolute;
   top: 3.2rem;
+  display: none;
   background: white;
+`;
+const SignOut = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  cursor: pointer;
   border-radius: 0 0 5px 5px;
   width: 100px;
   height: 40px;
   font-size: 16px;
   transition-duration: 167ms;
   text-align: center;
-  display: none;
+  color: black;
+  font-weight: bold;
   a {
     color: black;
     font-weight: bold;
@@ -279,11 +293,9 @@ const SignOut = styled.div`
   }
   &:hover {
     background-color: rgba(0, 0, 0, 0.2);
-    a {
-      color: white;
-    }
   }
 `;
+const ViewProfile = styled(SignOut)``;
 
 const User = styled(NavItem)`
   a > svg {
@@ -308,9 +320,10 @@ const User = styled(NavItem)`
   }
 
   &:hover {
-    ${SignOut} {
+    ${ViewDropdown} {
       align-items: center;
       display: flex;
+      flex-flow: column;
       justify-content: center;
       cursor: pointer;
     }

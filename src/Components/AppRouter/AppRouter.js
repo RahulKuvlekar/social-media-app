@@ -8,6 +8,7 @@ const Login = lazy(() => import("../../Pages/Login"));
 const SignUp = lazy(() => import("../../Pages/SignUp"));
 const JoinNow = lazy(() => import("../../Pages/JoinNow"));
 const Home = lazy(() => import("../../Pages/Home"));
+const ViewProfile = lazy(() => import("../../Pages/ViewProfile"));
 
 const AppRouter = (props) => {
   const { userAuthenticationStatus } = props; //take care of useEffect dependency
@@ -22,6 +23,7 @@ const AppRouter = (props) => {
       >
         <Switch>
           <Route exact path="/" component={Login} />
+          <Route path="/view-profile" component={ViewProfile} />
           <Route path="/join-now" component={JoinNow} />
           <Route path="/sign-up" component={SignUp} />
           <Route path="/home" component={Home} />
