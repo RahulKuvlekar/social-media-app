@@ -213,6 +213,8 @@ const ModalBody = styled.div`
     }
     img {
       width: 3.5rem;
+      height: 3.5rem;
+      object-fit: cover;
       border-radius: 50%;
       margin-right: 0.6rem;
     }

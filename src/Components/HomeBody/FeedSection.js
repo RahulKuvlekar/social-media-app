@@ -354,6 +354,7 @@ const Upload = styled.div`
   img {
     width: 3rem;
     height: 3rem;
+    object-fit: cover;
     border-radius: 50%;
     margin-right: 0.8rem;
   }

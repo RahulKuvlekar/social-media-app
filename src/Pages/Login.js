@@ -11,8 +11,9 @@ const Login = (props) => {
         <NavLink to="/">
           <img src="/Images/Logo.png" alt="LOGO-SMA" />
         </NavLink>
-        <div>
+        <FlexColumn>
           <JoinNow to="/join-now">Join Now</JoinNow>
+          <SignIn to="/sign-up">SignIn</SignIn>
           <LoginAsGuest
             onClick={() => {
               props.loginAsGuestUser();
@@ -20,8 +21,7 @@ const Login = (props) => {
           >
             Login As Guest
           </LoginAsGuest>
-          <SignIn to="/sign-up">SignIn</SignIn>
-        </div>
+        </FlexColumn>
       </Nav>
       <Section>
         <h1>Welcome to our professional community</h1>
@@ -67,6 +67,16 @@ const NavLink = styled(Link)`
     }
   }
 `;
+
+const FlexColumn = styled.div`
+  @media (max-width: 480px) {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+`;
 const LoginAsGuest = styled.button`
   color: #0a66c2;
   box-shadow: inset 0 0 0 1px #0a66c2;
@@ -75,7 +85,6 @@ const LoginAsGuest = styled.button`
   font-size: 1.5rem;
   font-weight: 500;
   padding: 0.6rem 1.6rem;
-  margin-right: 0.5rem;
   text-align: center;
   background-color: rgba(0, 0, 0, 0);
   border: none;
@@ -114,7 +123,7 @@ const SignIn = styled(Link)`
   transition-duration: 0.3s;
   font-size: 1.5rem;
   font-weight: 500;
-  line-height: 2;
+  margin-right: 0.5rem;
   padding: 0.6rem 1.6rem;
   text-align: center;
   background-color: rgba(0, 0, 0, 0);
