@@ -70,12 +70,16 @@ export const userAuthenticationStatus = (emailID, pass) => {
     });
   };
 };
-export const userSignOut = (emailID, pass) => {
+export const userSignOut = () => {
   console.log("log-SIGN-OUT");
   return (dispatch) => {
     signOut(auth)
       .then((data) => console.log("Signed Out", data))
       .catch((error) => alert(error.message));
+    dispatch({
+      type: SET_USER,
+      payload: null,
+    });
   };
 };
 
@@ -187,5 +191,23 @@ export const deletePost = (postId, imgURL) => {
           alert(error.message);
         });
     }
+  };
+};
+export const loginAsGuestUser = () => {
+  const GUEST_ID = {
+    displayName: "Guest User",
+    email: "MrGuestUser@gmail.com",
+    phoneNumber: "007007007",
+    photoURL:
+      "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/50px-Flag_of_India.svg.png",
+    providerId: "Guest",
+    uid: "GuestUserKJ3yeHZW7Yalvm0Skmo4As7o2S73GuestUser",
+  };
+  console.log("Login As User");
+  return (dispatch) => {
+    dispatch({
+      type: SET_USER,
+      payload: GUEST_ID,
+    });
   };
 };

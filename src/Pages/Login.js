@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-
+import { loginAsGuestUser } from "../Redux/Actions/authActions";
 const Login = (props) => {
   return (
     <Container>
@@ -13,6 +13,13 @@ const Login = (props) => {
         </NavLink>
         <div>
           <JoinNow to="/join-now">Join Now</JoinNow>
+          <LoginAsGuest
+            onClick={() => {
+              props.loginAsGuestUser();
+            }}
+          >
+            Login As Guest
+          </LoginAsGuest>
           <SignIn to="/sign-up">SignIn</SignIn>
         </div>
       </Nav>
@@ -58,6 +65,28 @@ const NavLink = styled(Link)`
       width: 3rem;
       height: 3rem;
     }
+  }
+`;
+const LoginAsGuest = styled.button`
+  color: #0a66c2;
+  box-shadow: inset 0 0 0 1px #0a66c2;
+  border-radius: 2rem;
+  transition-duration: 0.3s;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0.6rem 1.6rem;
+  margin-right: 0.5rem;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    background-color: rgba(112, 181, 249, 0.15);
+    color: #0a66c2;
+  }
+  @media (max-width: 768px) {
+    font-size: 1rem;
   }
 `;
 
@@ -151,7 +180,9 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    loginAsGuestUser: () => dispatch(loginAsGuestUser()),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

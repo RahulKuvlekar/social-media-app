@@ -6,7 +6,9 @@ import {
   createNewAccount,
   signInWithGoogle,
   userSignOut,
+  loginAsGuestUser,
 } from "../Redux/Actions/authActions";
+import { GuestBtn } from "./JoinNow";
 
 const SignUp = (props) => {
   const [error, setError] = useState({ state: false, message: null });
@@ -73,6 +75,13 @@ const SignUp = (props) => {
           </p>
           {error.state && <ErrorMsg>{error.message}</ErrorMsg>}
         </Form>
+        <GuestBtn onClick={() => props.loginAsGuestUser()}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/50px-Flag_of_India.svg.png"
+            alt="flag-logo"
+          />
+          Login As Guest
+        </GuestBtn>
         <Google onClick={() => props.signInWithGoogle()}>
           <img src="/images/google-logo.png" alt="google-logo" />
           Sign in with Google
@@ -226,6 +235,7 @@ const mapDispatchToProps = (dispatch) => {
     createNewAccount: (emailAddress, password, username) =>
       dispatch(createNewAccount(emailAddress, password, username)),
     userSignOut: () => dispatch(userSignOut()),
+    loginAsGuestUser: () => dispatch(loginAsGuestUser()),
   };
 };
 
