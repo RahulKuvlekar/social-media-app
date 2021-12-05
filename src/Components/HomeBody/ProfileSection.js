@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
-// import { Link } from "react-router-dom";
 const ProfileSection = (props) => {
   return (
     <Container>
@@ -20,23 +20,23 @@ const ProfileSection = (props) => {
             </>
           ) : (
             <>
-              <a href="#button" name="button">
-                <Photo />
+              <Link to="/view-profile">
+                <Photo style={{ cursor: "default" }} />
                 <LinkDiv>
                   Welcome,
                   <br />
                   <span>{props.user?.displayName}</span>
                 </LinkDiv>
-              </a>
-              <a href="#button" name="button">
+              </Link>
+              {/* <a href="#button" name="button">
                 <AddPhototext>Add Photo</AddPhototext>
-              </a>
+              </a> */}
             </>
           )}
         </UserInfo>
       </Card>
       <CardRecent>
-        <h2>Recent</h2>
+        <h2 style={{ cursor: "default" }}>Trending #Hashtags</h2>
         <div>
           <Hashtag>
             <span>#</span>
@@ -46,8 +46,16 @@ const ProfileSection = (props) => {
             <span>#</span>
             Coding
           </Hashtag>
-          <Channeltext>Group</Channeltext>
-          <Channeltext>Events</Channeltext>
+          <Hashtag>
+            <span>#</span>
+            programming
+          </Hashtag>
+          <Hashtag>
+            <span>#</span>
+            innovation
+          </Hashtag>
+          {/* <Channeltext>Group</Channeltext>
+          <Channeltext>Events</Channeltext> */}
         </div>
       </CardRecent>
     </Container>
@@ -113,13 +121,13 @@ const LinkDiv = styled.div`
   font-weight: 600;
 `;
 
-const AddPhototext = styled.div`
-  color: #0a66c2;
-  margin-top: 4px;
-  font-size: 0.7rem;
-  line-height: 1.3;
-  font-weight: 400;
-`;
+// const AddPhototext = styled.div`
+//   color: #0a66c2;
+//   margin-top: 4px;
+//   font-size: 0.7rem;
+//   line-height: 1.3;
+//   font-weight: 400;
+// `;
 
 const CardRecent = styled(Card)`
   padding: 1rem 0;
@@ -140,6 +148,7 @@ const Hashtag = styled.p`
   justify-content: flex-start;
   color: rgba(0, 0, 0, 0.5);
   font-weight: 500;
+
   span {
     color: rgba(0, 0, 0, 0.7);
     font-weight: 600;
@@ -147,19 +156,19 @@ const Hashtag = styled.p`
   }
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
-    cursor: pointer;
+    cursor: default;
   }
 `;
 
-const Channeltext = styled(AddPhototext)`
-  padding: 0.2rem 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
+// const Channeltext = styled(AddPhototext)`
+//   padding: 0.2rem 0.5rem;
+//   font-size: 1rem;
+//   font-weight: 600;
+//   &:hover {
+//     text-decoration: underline;
+//     cursor: pointer;
+//   }
+// `;
 
 const mapStateToProps = (state) => {
   return {

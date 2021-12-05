@@ -137,12 +137,12 @@ const PostModal = (props) => {
             </label>
           </AssetButton>
         </div>
-        <ShareComment>
+        {/* <ShareComment>
           <AssetButton>
             <img src="/Images/PostModal/comment.svg" alt="comment" />
             <p>Anyone.</p>
           </AssetButton>
-        </ShareComment>
+        </ShareComment> */}
         <PostButton
           disabled={IS_INVALID && !shareImage}
           onClick={(event) => postArticleHandler(event)}

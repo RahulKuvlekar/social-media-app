@@ -199,7 +199,7 @@ export const loginAsGuestUser = () => {
     email: "MrGuestUser@gmail.com",
     phoneNumber: "007007007",
     photoURL:
-      "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/100px-Flag_of_India.svg.png",
+      "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/180px-Flag_of_India.svg.png",
     providerId: "Guest",
     uid: "GuestUserKJ3yeHZW7Yalvm0Skmo4As7o2S73GuestUser",
   };

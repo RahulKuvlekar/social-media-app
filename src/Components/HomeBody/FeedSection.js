@@ -9,6 +9,7 @@ import "../UI/Modal/EditModal.css";
 import db from "../../Utils/init-firebase";
 // import ImageLoader from "../UI/ImageLoader/ImageLoader";
 import { arrayUnion, arrayRemove } from "../../Utils/init-firebase";
+import PostItem from "../PostItem/PostItem";
 
 const FeedSection = (props) => {
   // const [displayDropbox, setDisplayDropbox] = useState(false);
@@ -64,20 +65,20 @@ const FeedSection = (props) => {
   };
 
   const likeHandler = (event, postID) => {
-    let Flag = -1;
+    let IfExist = -1;
     db.collection("posts")
       .doc(postID)
       .get()
       .then((ans) => {
-        console.log(ans.data().Likes.indexOf(props.user.uid));
-        Flag = ans.data().Likes.indexOf(props.user.uid);
-        if (Flag < 0) {
-          console.log("FLAG union ", Flag);
+        IfExist = ans.data().Likes.indexOf(props.user.uid);
+        console.log(IfExist);
+        if (IfExist < 0) {
+          console.log("Like union ", IfExist);
           db.collection("posts")
             .doc(postID)
             .update({ Likes: arrayUnion(props.user.uid) });
         } else {
-          console.log("FLAG remove", Flag);
+          console.log("Like remove", IfExist);
           db.collection("posts")
             .doc(postID)
             .update({ Likes: arrayRemove(props.user.uid) });
@@ -161,10 +162,10 @@ const FeedSection = (props) => {
               <span>Video</span>
             </button>
 
-            <button onClick={showModal}>
+            {/* <button onClick={showModal}>
               <img src="/images/Sharebox/event.png" alt="" />
               <span>Event</span>
-            </button>
+            </button> */}
 
             <button onClick={showModal}>
               <img src="/images/Sharebox/article.svg" alt="" />
@@ -183,6 +184,13 @@ const FeedSection = (props) => {
         )}
         {props.articles.length > 0 &&
           props.articles.map((post) => (
+            // <PostItem
+            //   user={props.user}
+            //   post={post}
+            //   OpenEditDiscriptionModal={OpenEditDiscriptionModal}
+            //   OpenDeletePostModal={OpenDeletePostModal}
+            //   likeHandler={likeHandler}
+            // />
             <PostSection key={post.key} id={post.id}>
               <PostHeader>
                 <img

@@ -1,11 +1,11 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { userSignOut } from "../../Redux/Actions/authActions";
 
 const Header = (props) => {
-  const location = useLocation();
+  // const location = useLocation();
   return (
     <>
       <Container>
@@ -27,12 +27,16 @@ const Header = (props) => {
             <NavigationLists>
               <NavItem className={`${!props.ViewProfile ? "active" : ""}`}>
                 <Link to="/home">
-                  <img src="/images/NavLogo/nav-home.svg" alt="Home Logo" />
+                  <img
+                    src="/images/NavLogo/nav-home.svg"
+                    alt="Home Logo"
+                    style={{ opacity: `${props.ViewProfile ? ".6" : "1"}` }}
+                  />
                   <span>Home</span>
                 </Link>
               </NavItem>
 
-              <NavItem>
+              {/* <NavItem>
                 <Link to={location.pathname}>
                   <img
                     src="/images/NavLogo/nav-network.svg"
@@ -40,7 +44,7 @@ const Header = (props) => {
                   />
                   <span>Network</span>
                 </Link>
-              </NavItem>
+              </NavItem> */}
 
               {/* <NavItem>
                 <Link to={location.pathname}>
@@ -49,7 +53,7 @@ const Header = (props) => {
                 </Link>
               </NavItem> */}
 
-              <NavItem>
+              {/* <NavItem>
                 <Link to={location.pathname}>
                   <img
                     src="/images/NavLogo/nav-messaging.svg"
@@ -57,9 +61,9 @@ const Header = (props) => {
                   />
                   <span>Messaging</span>
                 </Link>
-              </NavItem>
+              </NavItem> */}
 
-              <NavItem>
+              {/* <NavItem>
                 <Link to={location.pathname}>
                   <img
                     src="/images/NavLogo/nav-notifications.svg"
@@ -67,7 +71,7 @@ const Header = (props) => {
                   />
                   <span>Notifications</span>
                 </Link>
-              </NavItem>
+              </NavItem> */}
 
               <User className={`${props.ViewProfile ? "active" : ""}`}>
                 <Link to="/home">
@@ -76,7 +80,9 @@ const Header = (props) => {
                   ) : (
                     <img src="/images/NavLogo/user.svg" alt="" />
                   )}
-                  <span>
+                  <span
+                    style={{ color: `${props.ViewProfile ? "black" : "1"}` }}
+                  >
                     Me <img src="/images/NavLogo/down-icon.svg" alt="" />
                   </span>
                 </Link>
@@ -268,6 +274,11 @@ const ViewDropdown = styled.div`
   top: 3.2rem;
   display: none;
   background: white;
+  border-radius: 7px 7px 0 0;
+  @media (max-width: 768px) {
+    top: -5rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
 `;
 const SignOut = styled.div`
   align-items: center;
