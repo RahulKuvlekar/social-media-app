@@ -125,7 +125,7 @@ export const postArticle = (payload) => {
             },
             shareVideo: payload.video,
             shareImage: downloadURL,
-            comment: 0,
+            comment: [],
             Likes: [],
             description: payload.description,
           });
@@ -146,7 +146,7 @@ export const postArticle = (payload) => {
         },
         shareVideo: payload.video,
         shareImage: "",
-        comment: 0,
+        comment: [],
         Likes: [],
         description: payload.description,
       });

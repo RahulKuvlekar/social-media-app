@@ -12,6 +12,7 @@ import "../Components/UI/Modal/EditModal.css";
 import db from "../Utils/init-firebase";
 // import ImageLoader from "../UI/ImageLoader/ImageLoader";
 import { arrayUnion, arrayRemove } from "../Utils/init-firebase";
+import firebase from "@firebase/app-compat";
 // import PostItem from "../PostItem/PostItem";
 
 const ViewProfile = (props) => {
@@ -22,6 +23,19 @@ const ViewProfile = (props) => {
   const [editDiscriptionInput, SetEditDiscriptionInput] = useState("");
   const [deletePostModal, setDeletePostModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState("");
+  const [commentInput, setCommentInput] = useState("");
+  const [commentArray, setCommentArray] = useState([
+    ...props.articles.map((data) => false),
+  ]);
+
+  const updateArrayValue = (value, idx) => {
+    const newArray = props.articles.map((data) => false);
+    if (idx >= 0) {
+      newArray[idx] = value;
+    }
+    setCommentArray(newArray);
+  };
+
   const hideEditDiscriptionModal = () => {
     showEditDiscriptionModal(false);
     SetEditDiscriptionInput("");
@@ -90,6 +104,24 @@ const ViewProfile = (props) => {
       });
   };
 
+  const postComment = (event, postID) => {
+    console.log("comment Post Id ", postID);
+    db.collection("posts")
+      .doc(postID)
+      .update({
+        comment: arrayUnion({
+          userInfo: {
+            displayName: props.user.displayName,
+            email: props.user.email,
+            photoURL: props.user.photoURL,
+            uid: props.user.uid,
+          },
+          commentText: commentInput,
+          timestamp: firebase.firestore.Timestamp.now(),
+        }),
+      });
+  };
+
   const { getArticles } = props;
   let getMyArticles = props.articles?.filter((data) => {
     // console.log(data.userInfo.emailID, " <===> ", props.user.email);
@@ -100,6 +132,8 @@ const ViewProfile = (props) => {
   useEffect(() => {
     getArticles();
     console.log("article log");
+    setCommentArray(props.articles.map((data) => false));
+    //eslint-disable-next-line
   }, [getArticles]);
   return (
     <div>
@@ -232,7 +266,7 @@ const ViewProfile = (props) => {
               </div>
             )}
             {getMyArticles?.length > 0 &&
-              getMyArticles?.map((post) => (
+              getMyArticles?.map((post, postIdx) => (
                 // <PostItem
                 //   user={props.user}
                 //   post={post}
@@ -342,7 +376,26 @@ const ViewProfile = (props) => {
                           : "Like"
                       }`}</span>
                     </button>
-                    <button>
+                    <button
+                      id={postIdx}
+                      onClick={() => {
+                        if (commentArray[postIdx]) {
+                          updateArrayValue(false, postIdx);
+                        } else {
+                          updateArrayValue(true, postIdx);
+                        }
+                        setCommentInput("");
+                        // getComment(post.id);
+                        // setCommentsOnPost({});
+                      }}
+                      style={{
+                        backgroundColor: `${
+                          commentArray[postIdx]
+                            ? "rgba(0, 0, 0, 0.15)"
+                            : "transparent"
+                        }`,
+                      }}
+                    >
                       <img
                         style={{ fill: "red" }}
                         src="/Images/Comment.svg"
@@ -350,15 +403,65 @@ const ViewProfile = (props) => {
                       />
                       <span>Comment</span>
                     </button>
-                    <button>
+                    {/* <button>
                       <img src="/Images/Share.svg" alt="" />
                       <span>Share</span>
                     </button>
                     <button>
                       <img src="/Images/Send.svg" alt="" />
                       <span>Send</span>
-                    </button>
+                    </button> */}
                   </PostFooter>
+                  {commentArray[postIdx] && (
+                    <PostComment>
+                      <div>
+                        {commentArray[postIdx] &&
+                          post.comment.length > 0 &&
+                          post.comment.reverse().map((comment, idx) => (
+                            <li key={idx}>
+                              <img
+                                src={`${
+                                  comment.userInfo.photoURL
+                                    ? comment.userInfo.photoURL
+                                    : "/images/NavLogo/user.svg"
+                                }`}
+                                alt=""
+                              />
+                              <span>
+                                {comment.commentText}
+                                <span>
+                                  {" "}
+                                  {comment?.timestamp.toDate().toLocaleString()}
+                                </span>
+                              </span>
+                            </li>
+                          ))}
+                      </div>
+                      <PostCommentInput
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          postComment(event, post.id);
+                          window.scroll();
+                          setCommentInput("");
+                        }}
+                      >
+                        {props.user?.photoURL ? (
+                          <img src={props.user?.photoURL} alt="dp" />
+                        ) : (
+                          <img src="/images/NavLogo/user.svg" alt="dp" />
+                        )}
+                        <input
+                          type="text"
+                          value={commentInput}
+                          onChange={(event) =>
+                            setCommentInput(event.target.value)
+                          }
+                          placeholder="Add a Comment ..."
+                        />
+                        <button type="submit">Post</button>
+                      </PostCommentInput>
+                    </PostComment>
+                  )}
                 </PostSection>
               ))}
           </>
@@ -382,11 +485,14 @@ const MyPosts = styled.div`
   grid-template-rows: repeat(auto-fill, 1fr);
   grid-column-gap: 16px;
   grid-row-gap: 16px;
-
+  @media (max-width: 930px) {
+    grid-template-columns: repeat(2, 1.5fr);
+  }
   @media (max-width: 660px) {
-    flex-flow: column nowrap;
+    /* flex-flow: column nowrap;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
+    grid-template-columns: repeat(1, 1fr);
   }
 `;
 
@@ -556,8 +662,12 @@ const PostSection = styled(CartMain)`
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  @media (max-width: 660px) {
+  @media (max-width: 930px) {
+    grid-template-columns: repeat(2, 1fr);
     max-width: 400px;
+  }
+  @media (max-width: 660px) {
+    max-width: 100%;
     max-height: 550px;
   }
 `;
@@ -621,7 +731,7 @@ const PostHeader = styled.div`
     background: transparent;
     border: none;
     cursor: pointer;
-    img {   
+    img {
       width: 3rem;
       height: 3rem;
       padding: 0 10px;
@@ -722,6 +832,82 @@ const PostFooter = styled.div`
     @media (max-width: 428px) {
       padding: 0.3rem;
     }
+  }
+`;
+
+const PostComment = styled.div`
+  /* min-height: 250px; */
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  margin-top: 0.5rem;
+  display: flex;
+  flex-flow: column;
+  div {
+    margin-bottom: 3.5rem;
+    max-height: 140px;
+    overflow-y: auto;
+    li {
+      display: flex;
+      flex-flow: row;
+      justify-content: flex-start;
+      margin: 0.5rem 0;
+      img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: cover;
+        border-radius: 50%;
+        margin: 0 0.5rem;
+      }
+      span {
+        background-color: #f2f2f2;
+        display: flex;
+        flex-flow: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        width: 80%;
+        text-align: left;
+        padding: 0.8rem;
+        border-radius: 0 8px 8px 8px;
+        span {
+          padding: 0;
+          opacity: 0.4;
+          font-size: 0.2rem;
+          margin-top: 0.3rem;
+        }
+      }
+    }
+  }
+  li {
+    list-style: none;
+  }
+`;
+const PostCommentInput = styled.form`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0.5rem auto 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-evenly;
+  img {
+    object-fit: cover;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+  input {
+    position: relative;
+    width: 60%;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+  }
+  button {
+    position: relative;
+    width: 20%;
   }
 `;
 

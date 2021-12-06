@@ -7,9 +7,10 @@ import ReactPlayer from "react-player";
 import Modal from "../UI/Modal/Modal";
 import "../UI/Modal/EditModal.css";
 import db from "../../Utils/init-firebase";
+import firebase from "@firebase/app-compat";
 // import ImageLoader from "../UI/ImageLoader/ImageLoader";
 import { arrayUnion, arrayRemove } from "../../Utils/init-firebase";
-import PostItem from "../PostItem/PostItem";
+// import PostItem from "../PostItem/PostItem";
 
 const FeedSection = (props) => {
   // const [displayDropbox, setDisplayDropbox] = useState(false);
@@ -18,6 +19,21 @@ const FeedSection = (props) => {
   const [editDiscriptionInput, SetEditDiscriptionInput] = useState("");
   const [deletePostModal, setDeletePostModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState("");
+  const [commentInput, setCommentInput] = useState("");
+  const [commentArray, setCommentArray] = useState([
+    ...props.articles.map((data) => false),
+  ]);
+
+  // console.log("COMMENST ", commentsOnPost);
+
+  const updateArrayValue = (value, idx) => {
+    const newArray = props.articles.map((data) => false);
+    if (idx >= 0) {
+      newArray[idx] = value;
+    }
+    setCommentArray(newArray);
+  };
+
   const hideEditDiscriptionModal = () => {
     showEditDiscriptionModal(false);
     SetEditDiscriptionInput("");
@@ -85,12 +101,63 @@ const FeedSection = (props) => {
         }
       });
   };
+  const postComment = (event, postID) => {
+    console.log("comment Post Id ", postID);
+    db.collection("posts")
+      .doc(postID)
+      .update({
+        comment: arrayUnion({
+          userInfo: {
+            displayName: props.user.displayName,
+            email: props.user.email,
+            photoURL: props.user.photoURL,
+            uid: props.user.uid,
+          },
+          commentText: commentInput,
+          timestamp: firebase.firestore.Timestamp.now(),
+        }),
+      });
+    // db.collection("posts")
+    //   .doc(postID)
+    //   .collection("Comments")
+    //   .add({
+    //     userInfo: {
+    //       displayName: props.user.displayName,
+    //       email: props.user.email,
+    //       photoURL: props.user.photoURL,
+    //       uid: props.user.uid,
+    //     },
+    //     commentText: commentInput,
+    //     timestamp: firebase.firestore.Timestamp.now(),
+    //   })
+    //   .then((data) => console.log("Error at post comment"))
+    //   .catch((error) => console.log("Error ata comment", error.message));
+  };
+
+  // const getComment = (postID) => {
+  //   // console.log("comment Post Id ", postID);
+  //   db.collection("posts")
+  //     .doc(postID)
+  //     .collection("Comments")
+  //     .orderBy("timestamp", "asc")
+  //     .onSnapshot((snapshot) => {
+  //       setCommentsOnPost(
+  //         snapshot.docs.map((doc, idx) => ({
+  //           ...doc.data(),
+  //           key: idx,
+  //           id: doc.id,
+  //         }))
+  //       );
+  //     });
+  // };
 
   const { getArticles } = props;
 
   useEffect(() => {
     getArticles();
     console.log("article log");
+    setCommentArray(props.articles.map((data) => false));
+    // eslint-disable-next-line
   }, [getArticles]);
   return (
     <>
@@ -183,7 +250,7 @@ const FeedSection = (props) => {
           </div>
         )}
         {props.articles.length > 0 &&
-          props.articles.map((post) => (
+          props.articles.map((post, postIdx) => (
             // <PostItem
             //   user={props.user}
             //   post={post}
@@ -261,7 +328,8 @@ const FeedSection = (props) => {
                     />
                   </button>
                   <span>
-                    | {post.Likes ? post?.Likes?.length : "0"} Like | Comments
+                    | {post.Likes ? post?.Likes?.length : "0"} Like |{" "}
+                    {post.comment ? post?.comment?.length : "0"} Comment
                   </span>
                 </li>
               </PostBody>
@@ -290,7 +358,26 @@ const FeedSection = (props) => {
                       : "Like"
                   }`}</span>
                 </button>
-                <button>
+                <button
+                  id={postIdx}
+                  onClick={() => {
+                    if (commentArray[postIdx]) {
+                      updateArrayValue(false, postIdx);
+                    } else {
+                      updateArrayValue(true, postIdx);
+                    }
+                    setCommentInput("");
+                    // getComment(post.id);
+                    // setCommentsOnPost({});
+                  }}
+                  style={{
+                    backgroundColor: `${
+                      commentArray[postIdx]
+                        ? "rgba(0, 0, 0, 0.15)"
+                        : "transparent"
+                    }`,
+                  }}
+                >
                   <img
                     style={{ fill: "red" }}
                     src="/Images/Comment.svg"
@@ -298,15 +385,63 @@ const FeedSection = (props) => {
                   />
                   <span>Comment</span>
                 </button>
-                <button>
+                {/* <button>
                   <img src="/Images/Share.svg" alt="" />
                   <span>Share</span>
                 </button>
                 <button>
                   <img src="/Images/Send.svg" alt="" />
                   <span>Send</span>
-                </button>
+                </button> */}
               </PostFooter>
+              {commentArray[postIdx] && (
+                <PostComment>
+                  <div>
+                    {commentArray[postIdx] &&
+                      post.comment.length > 0 &&
+                      post.comment.reverse().map((comment, idx) => (
+                        <li key={idx}>
+                          <img
+                            src={`${
+                              comment.userInfo.photoURL
+                                ? comment.userInfo.photoURL
+                                : "/images/NavLogo/user.svg"
+                            }`}
+                            alt=""
+                          />
+                          <span>
+                            {comment.commentText}
+                            <span>
+                              {" "}
+                              {comment?.timestamp.toDate().toLocaleString()}
+                            </span>
+                          </span>
+                        </li>
+                      ))}
+                  </div>
+                  <PostCommentInput
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      postComment(event, post.id);
+                      window.scroll();
+                      setCommentInput("");
+                    }}
+                  >
+                    {props.user?.photoURL ? (
+                      <img src={props.user?.photoURL} alt="dp" />
+                    ) : (
+                      <img src="/images/NavLogo/user.svg" alt="dp" />
+                    )}
+                    <input
+                      type="text"
+                      value={commentInput}
+                      onChange={(event) => setCommentInput(event.target.value)}
+                      placeholder="Add a Comment ..."
+                    />
+                    <button type="submit">Post</button>
+                  </PostCommentInput>
+                </PostComment>
+              )}
             </PostSection>
           ))}
       </Container>
@@ -514,11 +649,11 @@ const PostBody = styled.div`
       flex-flow: row;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      cursor: default;
     }
     span {
       color: rgba(0, 0, 0, 0.8);
-      cursor: pointer;
+      cursor: default;
     }
   }
 `;
@@ -527,7 +662,7 @@ const PostFooter = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 1rem;
   button {
     /* width: 100%; */
@@ -540,6 +675,7 @@ const PostFooter = styled.div`
     padding: 0.5rem;
     opacity: 0.7;
     cursor: pointer;
+    border-radius: 5px;
     img {
       width: 1.5rem;
       margin-right: 5px;
@@ -556,8 +692,7 @@ const PostFooter = styled.div`
       }
     }
     &:hover {
-      background-color: rgba(0, 0, 0, 0.15);
-      border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.15) !important;
     }
     @media (max-width: 428px) {
       padding: 0.3rem;
@@ -565,6 +700,81 @@ const PostFooter = styled.div`
   }
 `;
 
+const PostComment = styled.div`
+  /* min-height: 250px; */
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  margin-top: 0.5rem;
+  display: flex;
+  flex-flow: column;
+  div {
+    margin-bottom: 3.5rem;
+    max-height: 220px;
+    overflow-y: auto;
+    li {
+      display: flex;
+      flex-flow: row;
+      justify-content: flex-start;
+      margin: 0.5rem 0;
+      img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: cover;
+        border-radius: 50%;
+        margin: 0 1rem;
+      }
+      span {
+        background-color: #f2f2f2;
+        display: flex;
+        flex-flow: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        width: 85%;
+        text-align: left;
+        padding: 0.8rem;
+        border-radius: 0 8px 8px 8px;
+        span {
+          padding: 0;
+          opacity: 0.4;
+          font-size: 0.2rem;
+          margin-top: 0.3rem;
+        }
+      }
+    }
+  }
+  li {
+    list-style: none;
+  }
+`;
+const PostCommentInput = styled.form`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0.5rem auto 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-evenly;
+  img {
+    object-fit: cover;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+  input {
+    position: relative;
+    width: 60%;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+  }
+  button {
+    position: relative;
+    width: 20%;
+  }
+`;
 const ReactPlayerDiv = styled(ReactPlayer)`
   div {
     padding: 0;

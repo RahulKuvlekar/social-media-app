@@ -15,14 +15,15 @@ const Header = (props) => {
               <img className="brand-logo" src="/images/Logo.png" alt="" />
             </Link>
           </Logo>
-          <Search>
+          {/* <Search>
             <div>
               <input type="text" placeholder="Search" />
             </div>
             <SearchIcon>
               <img src="/images/search-icon.svg" alt="" />
             </SearchIcon>
-          </Search>
+          </Search> */}
+          <h1 style={{ color: "#0a66c2" }}>Social Media App</h1>
           <Navigation>
             <NavigationLists>
               <NavItem className={`${!props.ViewProfile ? "active" : ""}`}>
