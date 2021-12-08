@@ -39,11 +39,13 @@ const Section = styled.section`
   h5 {
     color: #434649;
     font-size: 1rem;
+    cursor: default;
     a {
       color: #0a66c2;
       font-weight: 700;
       font-size: 1.2rem;
       margin: 0 5px;
+      cursor: default;
       @media (max-width: 768px) {
         font-size: 1rem;
       }
