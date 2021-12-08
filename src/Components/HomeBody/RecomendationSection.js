@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 const RecomendationSection = () => {
+  const [randomNo, setRandomNo] = useState(Math.floor(Math.random() * (3 + 1)));
+  console.log("random no", randomNo);
+  const imgUrls = [
+    "https://coursework.vschool.io/content/images/size/w2000/2017/08/react.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/600px-JavaScript-logo.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/SocialMediaSignDirection.jpg/640px-SocialMediaSignDirection.jpg",
+  ];
+  useEffect(() => {
+    setRandomNo(Math.floor(Math.random() * (2 + 1)));
+  }, []);
   return (
     <Container>
       <FollowCard>
-        <span>Add</span>
-        <h1>Rahul Kuvlekar</h1>
+        <span>Advertisement</span>
+        <img src={imgUrls[randomNo]} alt="advertisement img" />
       </FollowCard>
     </Container>
   );
@@ -30,5 +40,11 @@ const FollowCard = styled.div`
     display: block;
     text-align: right;
     color: rgba(0, 0, 0, 0.4);
+    padding-right: 0.5rem;
+    cursor: default;
+  }
+  img {
+    width: 100%;
+    object-fit: cover;
   }
 `;
