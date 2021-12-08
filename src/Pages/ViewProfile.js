@@ -346,8 +346,8 @@ const ViewProfile = (props) => {
                         />
                       </button>
                       <span>
-                        | {post.Likes ? post?.Likes?.length : "0"} Like |
-                        Comments
+                        | {post.Likes ? post?.Likes?.length : "0"} Like |{" "}
+                        {post.comment ? post?.comment?.length : "0"} Comment
                       </span>
                     </li>
                   </PostBody>
@@ -783,11 +783,11 @@ const PostBody = styled.div`
       flex-flow: row;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      cursor: default;
     }
     span {
       color: rgba(0, 0, 0, 0.8);
-      cursor: pointer;
+      cursor: default;
     }
   }
 `;

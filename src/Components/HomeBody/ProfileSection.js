@@ -148,16 +148,16 @@ const Hashtag = styled.p`
   justify-content: flex-start;
   color: rgba(0, 0, 0, 0.5);
   font-weight: 500;
-
+  cursor: default;
   span {
     color: rgba(0, 0, 0, 0.7);
     font-weight: 600;
     margin-right: 0.2rem;
   }
-  &:hover {
+  /* &:hover {
     background-color: rgba(0, 0, 0, 0.05);
     cursor: default;
-  }
+  } */
 `;
 
 // const Channeltext = styled(AddPhototext)`
