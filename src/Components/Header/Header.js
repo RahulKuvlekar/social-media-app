@@ -148,48 +148,48 @@ const Logo = styled.span`
   }
 `;
 
-const Search = styled.div`
-  opacity: 1;
-  flex-grow: 1;
-  position: relative;
-  & > div {
-    input {
-      border: none;
-      box-shadow: none;
-      background-color: #f3f2ef;
-      border-radius: 2px;
-      color: rgba(0, 0, 0, 0.9);
-      width: 218px;
-      padding: 0 8px 0 40px;
-      line-height: 1.75;
-      font-weight: 400;
-      font-size: 14px;
-      height: 2rem;
-      border-color: #dce6f1;
-      vertical-align: text-top;
-      @media (max-width: 768px) {
-        width: 100%;
-      }
-    }
-  }
-`;
+// const Search = styled.div`
+//   opacity: 1;
+//   flex-grow: 1;
+//   position: relative;
+//   & > div {
+//     input {
+//       border: none;
+//       box-shadow: none;
+//       background-color: #f3f2ef;
+//       border-radius: 2px;
+//       color: rgba(0, 0, 0, 0.9);
+//       width: 218px;
+//       padding: 0 8px 0 40px;
+//       line-height: 1.75;
+//       font-weight: 400;
+//       font-size: 14px;
+//       height: 2rem;
+//       border-color: #dce6f1;
+//       vertical-align: text-top;
+//       @media (max-width: 768px) {
+//         width: 100%;
+//       }
+//     }
+//   }
+// `;
 
-const SearchIcon = styled.div`
-  width: 2.5rem;
-  position: absolute;
-  z-index: 1;
-  top: 10px;
-  left: 2px;
-  border-radius: 0 2px 2px 0;
-  margin: 0;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  & > img {
-    opacity: 0.6;
-  }
-`;
+// const SearchIcon = styled.div`
+//   width: 2.5rem;
+//   position: absolute;
+//   z-index: 1;
+//   top: 10px;
+//   left: 2px;
+//   border-radius: 0 2px 2px 0;
+//   margin: 0;
+//   pointer-events: none;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   & > img {
+//     opacity: 0.6;
+//   }
+// `;
 
 const Navigation = styled.div`
   margin-left: auto;
